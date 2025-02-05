@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="ui_event" content="true"/>
+    <meta name="ui_grid_event" content="true"/>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+<h1>{{ .Heading }}</h1>
+<p>{{ .Message }}</p>
+<p><a href="/api/healthcheck">Health Check API</a></p>
+<button type="button" class="btn login" @click="Test">Test</button>
+</body>
+</html>

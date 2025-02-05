@@ -1,0 +1,120 @@
+version: "3.8"
+
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: ./web/Dockerfile
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mqtt:
+        condition: service_healthy
+    env_file:
+      - ./env/docker.env
+    environment:
+      SERVER_PORT: "${SERVER_PORT}"
+      APP_ENV: development
+    volumes:
+      - type: bind
+        source: ./env
+        target: /app/env
+        read_only: true
+      - type: bind
+        source: ./log
+        target: /app/log
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14.15-alpine
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    env_file:
+      - ./env/docker.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - type: bind
+        source: ./env/docker/pg_hba.conf
+        target: /etc/postgresql/pg_hba.conf
+        read_only: true
+      - type: bind
+        source: ./env/docker/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        read_only: true
+    command: >
+      postgres
+        -c listen_addresses='*'
+        -c hba_file=/etc/postgresql/pg_hba.conf
+        -c config_file=/etc/postgresql/postgresql.conf
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    env_file:
+      - ./env/docker.env
+    command: [ "redis-server", "--bind", "0.0.0.0",
+               "--protected-mode", "no",
+               "--requirepass", "${REDIS_PASSWORD}" ]
+    volumes:
+      - redisdata:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep PONG || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  mqtt:
+    image: rabbitmq:3-management
+    ports:
+      - "${MQTT_PORT}:${MQTT_PORT}"
+      - "${MQTT_AMQP_PORT}:${MQTT_AMQP_PORT}"
+      - "${MQTT_TLS_PORT}:${MQTT_TLS_PORT}"
+      - "${MQTT_MANAGEMENT_PORT}:${MQTT_MANAGEMENT_PORT}"
+    env_file:
+      - ./env/docker.env
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_mqtt && 
+               rabbitmq-server"
+    volumes:
+      - mqttdata:/var/lib/rabbitmq/mnesia
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics check_port_connectivity" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  pgdata:
+  redisdata:
+  mqttdata:
+
+networks:
+  app-network:

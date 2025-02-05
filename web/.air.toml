@@ -1,0 +1,18 @@
+# .air.toml
+[build]
+  # bin = "server"
+  # cmd = "go build -o {{.Bin}} ."
+  cmd = "go build -o server.exe main.go"
+  bin = "server.exe"
+  include_ext = ["go", "tpl", "tmpl", "html", "scss", "html", "js"]
+  exclude_dir = ["assets", "tmp", "vendor"]
+
+[log]
+  time = true
+  level = "debug"
+
+[color]
+  main = "yellow"
+
+[misc]
+  watcher = "fsnotify"

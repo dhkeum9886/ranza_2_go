@@ -1,0 +1,36 @@
+# Go 빌드 산출물 및 바이너리
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/server
+
+# 소스 관리와 관련 없는 파일들
+.git
+.gitignore
+.idea
+*.iml
+/web/tmp/
+
+# OS 임시파일
+.DS_Store
+Thumbs.db
+
+# 로컬 환경 설정 파일들
+.env
+*.env
+
+# Node 관련 (프론트엔드)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# 빌드 산출물들
+/build
+/dist
+/public
+
+# Docker 관련 기타 파일
+docker-compose.override.yml

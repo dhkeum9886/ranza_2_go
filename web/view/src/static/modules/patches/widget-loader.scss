@@ -1,0 +1,255 @@
+@use "sass:math";
+
+div.mloading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  line-height: initial;
+
+  mask {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-color: #000;
+  }
+
+  .loading-wrapper {
+    //display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    z-index: 1;
+
+    .loading {
+      width: 20px;
+      height: 20px;
+      border-radius: 50px;
+      border: 2px solid #fff;
+      border-top-color: rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      animation: mloading 1.2s linear infinite;
+    }
+
+    .loading-text {
+      flex: 1;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      display: inline-block;
+      color: #fff;
+      margin-left: 10px;
+      vertical-align: super;
+      white-space: nowrap;
+    }
+  }
+
+  .loading-wrapper.white {
+    .loading {
+      border: 2px solid #fff;
+      border-top-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .loading-text {
+      color: #fff;
+    }
+  }
+
+  .loading-wrapper.black {
+    .loading {
+      border: 2px solid #000;
+      border-top-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .loading-text {
+      color: #000;
+    }
+  }
+
+  .loading-wrapper.red {
+    .loading {
+      border: 2px solid #f5365c;
+      border-top-color: rgba(245, 54, 92, 0.3);
+    }
+
+    .loading-text {
+      color: #f5365c;
+    }
+  }
+
+  .loading-wrapper.blue {
+    .loading {
+      border: 2px solid #5e72e4;
+      border-top-color: rgba(94, 114, 228, 0.3);
+    }
+
+    .loading-text {
+      color: #5e72e4;
+    }
+  }
+
+  .loading-wrapper.green {
+    .loading {
+      border: 2px solid #2dce89;
+      border-top-color: rgba(45, 206, 136, 0.3);
+    }
+
+    .loading-text {
+      color: #2dce89;
+    }
+  }
+
+  .loading-wrapper.orange {
+    .loading {
+      border: 2px solid #fb6340;
+      border-top-color: rgba(251, 98, 64, 0.3);
+    }
+
+    .loading-text {
+      color: #fb6340;
+    }
+  }
+
+  $cubesize: 50px;
+
+  .cube-folding {
+    width: $cubesize;
+    height: $cubesize;
+    display: inline-block;
+    transform: rotate(45deg);
+    font-size: 0;
+
+    span {
+      position: relative;
+      //width: $cubesize/2;
+      //height: $cubesize/2;
+      width: math.div($cubesize, 2);
+      height: math.div($cubesize, 2);
+      transform: scale(1.1);
+      display: inline-block;
+
+      &::before {
+        content: '';
+        background-color: #fd5d93;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        //width: $cubesize/2;
+        //height: $cubesize/2;
+        width: math.div($cubesize, 2);
+        height: math.div($cubesize, 2);
+        transform-origin: 100% 100%;
+        animation: mfolding 2.5s infinite linear both;
+      }
+    }
+
+    .leaf2 {
+      transform: rotateZ(90deg) scale(1.1);
+
+      &::before {
+        animation-delay: 0.3s;
+        background-color: #1d8cf8;
+      }
+    }
+
+    .leaf3 {
+      transform: rotateZ(270deg) scale(1.1);
+
+      &::before {
+        animation-delay: 0.9s;
+        background-color: #00bf9a;
+      }
+    }
+
+    .leaf4 {
+      transform: rotateZ(180deg) scale(1.1);
+
+      &::before {
+        animation-delay: 0.6s;
+        background-color: #ff8d72;
+      }
+    }
+  }
+
+  .cube-wrapper {
+    //position: fixed;
+    width: $cubesize*2;
+    height: $cubesize*2;
+    text-align: center;
+
+    .loading-text {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      margin-top: 10px;
+      white-space: nowrap;
+    }
+  }
+
+  .cube-wrapper.black {
+    .loading-text {
+      color: #000;
+    }
+  }
+
+  .cube-wrapper.red {
+    .loading-text {
+      color: #f5365c;
+    }
+  }
+
+  .cube-wrapper.blue {
+    .loading-text {
+      color: #5e72e4;
+    }
+  }
+
+  .cube-wrapper.green {
+    .loading-text {
+      color: #2dce89;
+    }
+  }
+
+  .cube-wrapper.orange {
+    .loading-text {
+      color: #fb6340;
+    }
+  }
+}
+
+@keyframes mfolding {
+  0%,
+  10% {
+    transform: perspective(140px) rotateX(-180deg);
+    opacity: 0;
+  }
+  25%,
+  75% {
+    transform: perspective(140px) rotateX(0deg);
+    opacity: 1;
+  }
+  90%,
+  100% {
+    transform: perspective(140px) rotateY(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes mloading {
+  0% {
+    transform: rotate(0deg)
+  }
+  100% {
+    transform: rotate(360deg)
+  }
+}
